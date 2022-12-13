@@ -5,6 +5,7 @@ import express from "express";
 import compression from "compression";
 import serveStatic from "serve-static";
 import { createServer as createViteServer } from "vite";
+import bodyParser from "body-parser";
 const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
 
 const resolve = (p: string) => path.resolve(__dirname, p);
@@ -48,6 +49,55 @@ async function createServer(isProd = process.env.NODE_ENV === "production") {
     );
   }
   const stylesheets = getStyleSheets();
+
+  app.use(bodyParser.json());
+  app.use(bodyParser.text());
+
+  // app.get("/hello", (req, res, next) => {
+  //   res.status(200).send("Test Api");
+  // });
+
+  let smsCode = "";
+
+  app.post("/SignInStep2/RequestTelCode", (req, res, next) => {
+    const payload = req.body;
+    console.log(payload);
+    if (payload.telNumber) {
+      smsCode = Math.floor(Math.random() * 9000 + 1000).toString();
+      res.status(200).send(`SMS on ${payload.telNumber} sent (${smsCode})`);
+    } else res.status(200).send(`Wrong request`);
+  });
+
+  app.post("/SignInStep2/CheckTelCode", (req, res, next) => {
+    const payload = req.body;
+    console.log(payload);
+    if (payload.telCode && smsCode) {
+      if (payload.telCode === smsCode) {
+        res.status(200).send(`Telephone number is confirmed`);
+      } else res.status(200).send(`Wrong code`);
+    } else res.status(200).send(`Wrong request`);
+  });
+
+  // app.get("/SignInStep2", (req, res, next) => {
+  //   console.log(req.headers);
+  //   res.status(200).send(`SMS on ${payload.telNumber} sent`);
+  //   next();
+  // });
+
+  // app.post("/SignInStep2", (req, res, next) => {
+  //   const payload = req.body;
+  //   console.log(payload);
+  //   if (payload.tel == "888" && payload.password == "123") {
+  //     res.status(200).send(JSON.stringify({loggedIn: true}));
+  //   }
+  // });
+
+  // app.post("/PostTest", (req, res, next) => {
+  //   const payload = req.body;
+  //   console.log(payload);
+  //   res.status(200).send(JSON.stringify(payload));
+  // });
+
   app.use("*", async (req: Request, res: Response, next: NextFunction) => {
     const url = req.originalUrl;
 
