@@ -23,7 +23,8 @@ const useValidation = (value: any, validations: validations) => {
         }
         case "validPassword": {
             // const regExp = /^.{1,20}$/; // только для ускорения тестов
-            const regExp = /^(?=.*[\d])(?=.*[A-ZА-ЯЁ])(?=.*[!@#$%^&*]).{8}$/;
+            // const regExp = /^(?=.*[\d])(?=.*[A-Za-z])(?=.*[.,:;?!*+%\-<>@[\]{}/\\_{}$#]).{8}$/;
+            const regExp = /^(?=.*?[\d])(?=.*?[A-Za-z])(?=.*?[.,:;?!*+%\-<>@[\]{}/\\_{}$#])[\dA-Za-z.,:;?!*+%\-<>@[\]{}/\\_{}$#]{8,14}$/;
           if (regExp.test(value)) setPassValid(true);
           else {
             setPassValid(false);
@@ -33,7 +34,7 @@ const useValidation = (value: any, validations: validations) => {
         }
         case "validUserName": {
           // const regExp = /^.{1,20}$/; // только для ускорения тестов
-          const regExp = /^[а-яА-ЯёЁa-zA-Z].{1,20}$/; // от 1 до 20 символов от латиницы и кириллицы
+          const regExp = /^[А-ЯЁA-Z][а-яА-ЯёЁa-zA-Z-]{0,29}$/; // от 1 до 20 символов от латиницы и кириллицы
           if (regExp.test(value)) setNickname(true);
           else {
             setNickname(false);

@@ -11,7 +11,7 @@ export const Header: React.FC = () => {
       <img src={logo} alt="Лого" onClick={() => navigate("/")} className="max-h-8 mx-3 my-1 cursor-pointer"/>
       <button
         type="button"
-        onClick={() => navigate("/LogIn")}
+        onClick={() => navigate("/Auth")}
         className="bg-orange-500 rounded-sm px-3 py-1 mx-3 my-1 text-white"
       >
         Войти

@@ -1,21 +1,35 @@
 import React, { useState, useEffect, ChangeEvent, useRef, useSyncExternalStore } from "react";
 import { useNavigate } from "react-router-dom";
-import useInput, {IUseInput} from "../hooks/useInput";
-import { TelNumberInput } from "./TelNumberInput";
+import useInput, { IUseInput } from "../hooks/useInput";
+import { Emailnput } from "../components/Emailnput";
+import { TelNumberInput } from "../components/TelNumberInput";
+import eye from "../img/eye.svg";
+import eyeSlash from "../img/eye-slash.svg";
+
 // import useTelephoneInput from "../hooks/useTelephoneInput";
 
-export const SignInStep2: React.FC = () => {
+export const RegStep2: React.FC = () => {
   let navigate = useNavigate();
   const [dataValid, setDataValid] = useState<boolean>(false);
   const [isTelConfirmed, setTelConfirmed] = useState<boolean>(false);
-  const telNumber: IUseInput = useInput(["isEmpty", "validTelephone"]);
+  const [isEmailConfirmed, setEmailConfirmed] = useState<boolean>(false);
+  const telNumber = useInput(["isEmpty", "validTelephone"]);
   const email = useInput(["isEmpty", "validEmail"]);
   const password = useInput(["isEmpty", "validPassword"]);
   const confirmPassword = useInput(["isEmpty", "validPassword"]);
+  const [isFirstPasVisible, setFirstPasVisible] = useState(false);
+  const [isSecondPasVisible, setSecondPasVisible] = useState(false);
 
   useEffect(() => {
     setDataValid((isTelConfirmed || email.isValid) && password.isValid && password.value === confirmPassword.value);
   }, [isTelConfirmed, email.isValid, password.isValid, password.value, confirmPassword.value]);
+
+  const toggleFirstPasVisible = () => {
+    setFirstPasVisible(!isFirstPasVisible);
+  };
+  const toggleSecondPasVisible = () => {
+    setSecondPasVisible(!isSecondPasVisible);
+  };
 
   // const [name, setName] = useState<string>("");
 
@@ -49,16 +63,6 @@ export const SignInStep2: React.FC = () => {
   //   }
   // };
 
-  // const telInputRef = useRef<HTMLInputElement>(null);
-  // const telCodeRef = useRef<HTMLInputElement>(null);
-  // const requestTelCode = () => {
-  //   if (telInputRef.current) telInputRef.current.hidden = !telInputRef.current.hidden;
-  //   if (telCodeRef.current) telCodeRef.current.hidden = !telCodeRef.current.hidden;
-  //   // if (telInputRef.current.className != null) telInputRef.current.className = telInputRef.current.className + " hidden"
-  // };
-
-  // const telInput = useTelephoneInput();
-
   return (
     <main className="">
       <div className="flex flex-col items-center">
@@ -74,46 +78,54 @@ export const SignInStep2: React.FC = () => {
           }}
         >
           <span className="text-gray-500 text-center">Введите номер телефона</span>
-          <TelNumberInput telNumber={telNumber} setTelConfirmed={setTelConfirmed} isTelConfirmed={isTelConfirmed}/>
+          <TelNumberInput telNumber={telNumber} setTelConfirmed={setTelConfirmed} isTelConfirmed={isTelConfirmed} />
 
           <span className="text-gray-500 text-center">Или</span>
           <span className="text-gray-500 text-center">E-mail</span>
-          <input
-            value={email.value}
-            onChange={email.onChange}
-            className={
-              "border-solid border-gray-400 border rounded px-1 " + (email.isValid ? "bg-green-200" : "bg-blue-100")
-            }
-            type="email"
-            placeholder="E-mail"
-          />
-          <span className="text-gray-500 text-center">Придумайте пароль</span>
-          <input
-            value={password.value}
-            onChange={password.onChange}
-            className={
-              "border-solid border-gray-400 border rounded px-1 " + (password.isValid ? "bg-green-200" : "bg-blue-100")
-            }
-            type="password"
-            placeholder="Придумайте пароль"
-          />
-          <span className="text-gray-500 text-center">Повторите пароль</span>
-          <input
-            value={confirmPassword.value}
-            onChange={confirmPassword.onChange}
-            className={
-              "border-solid border-gray-400 border rounded px-1 " +
-              (password.value === confirmPassword.value && confirmPassword.isValid ? "bg-green-200" : "bg-blue-100")
-            }
-            type="password"
-            placeholder="Повторите пароль"
-          />
+          <Emailnput email={email} setEmailConfirmed={setEmailConfirmed} isEmailConfirmed={isEmailConfirmed} />
 
+          <label className="text-gray-500 text-center flex flex-col relative">
+            Придумайте пароль
+            <input
+              value={password.value}
+              onChange={password.onChange}
+              className={
+                "border-solid border-gray-400 border rounded px-1 " +
+                (password.isValid ? "bg-green-200" : "bg-blue-100")
+              }
+              type={isFirstPasVisible ? "text" : "password"}
+              placeholder="Придумайте пароль"
+            />
+            <img
+              src={isFirstPasVisible ? eyeSlash : eye}
+              onClick={toggleFirstPasVisible}
+              className="absolute top-[29px] right-2"
+            />
+            <span className="text-gray-500 text-xs text-left">{"Пароль должен состоять из букв латинского алфавита (A-z), арабских цифр (0-9) и специальных символов: ( . , : ; ? ! * + % - < > @ [ ] { } / \\ _ {} $ # )"}</span>
+          </label>
+          <label className="text-gray-500 text-center flex flex-col relative">
+            Повторите пароль
+            <input
+              value={confirmPassword.value}
+              onChange={confirmPassword.onChange}
+              className={
+                "border-solid border-gray-400 border rounded px-1 " +
+                (password.value === confirmPassword.value && confirmPassword.isValid ? "bg-green-200" : "bg-blue-100")
+              }
+              type={isSecondPasVisible ? "text" : "password"}
+              placeholder="Повторите пароль"
+            />
+            <img
+              src={isSecondPasVisible ? eyeSlash : eye}
+              onClick={toggleSecondPasVisible}
+              className="absolute top-[29px] right-2"
+            />
+          </label>
           <div className="flex gap-5 self-center my-5">
             <button
               onClick={e => {
                 e.preventDefault();
-                navigate("/SignIn");
+                navigate("/Registration/Step1");
               }}
               className="border-solid border-gray-400 border text-sm leading-6 font-medium py-2 px-3 rounded-lg w-28"
             >
@@ -122,7 +134,7 @@ export const SignInStep2: React.FC = () => {
             <button
               onClick={e => {
                 e.preventDefault();
-                if (dataValid) navigate("/MainPage");
+                if (dataValid) navigate("/Main");
               }}
               className={
                 "text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg w-28 " +

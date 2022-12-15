@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { To, useNavigate } from "react-router-dom";
 import useInput from "../hooks/useInput";
-import { DateOfBirthInput } from "./DateOfBirthInput";
-import { TestAPIButton } from "./TestAPIButton";
+import { DateOfBirthInput } from "../components/DateOfBirthInput";
+import { TestAPIButton } from "../components/TestAPIButton";
 
-export const SignIn: React.FC = () => {
+export const RegStep1: React.FC = () => {
   let navigate = useNavigate();
   const [dataValid, setDataValid] = useState<boolean>(false);
   const userName = useInput(["isEmpty", "validUserName"]);
@@ -46,7 +46,7 @@ export const SignIn: React.FC = () => {
           onKeyDown={e => {
             if (e.key == "Enter") {
               e.preventDefault();
-              if (dataValid) navigate("/SignInStep2");
+              if (dataValid) navigate("/Registration/Step2");
             }
           }}
         >
@@ -74,7 +74,7 @@ export const SignIn: React.FC = () => {
             <button
               onClick={e => {
                 e.preventDefault();
-                navigate("/LogIn");
+                navigate("/Auth");
               }}
               className="border-solid border-gray-400 border text-sm leading-6 font-medium py-2 px-3 rounded-lg w-28"
             >
@@ -83,7 +83,7 @@ export const SignIn: React.FC = () => {
             <button
               onClick={e => {
                 e.preventDefault();
-                if (dataValid) navigate("/SignInStep2");
+                if (dataValid) navigate("/Registration/Step2");
               }}
               className={"text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg w-28 " + (dataValid ? "bg-orange-600" : "bg-gray-500")}
             >

@@ -1,9 +1,24 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { TestAPIFoo } from "./TestAPIFoo";
+import { LogIn } from "src/server/routes/api";
+// import { TestAPIFoo } from "../components/TestAPIFoo";
 
-export const LogIn: React.FC = () => {
-let navigate = useNavigate();
+export const Auth: React.FC = () => {
+  let navigate = useNavigate();
+
+  // const LogIn = async () => {
+  //     let response = await fetch("/Registration/CheckEmailCode", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json;charset=utf-8",
+  //       },
+  //       body: JSON.stringify({  }),
+  //     });
+  //     let resText = await response.text();
+  //     // if (resText === "Email is confirmed") setEmailConfirmed(true);
+  //     // else setEmailConfirmed(false);
+  //     console.log(resText);  
+  // };
 
   return (
     <main>
@@ -19,17 +34,18 @@ let navigate = useNavigate();
             <input className="border-solid border-gray-400 border rounded px-1" type="password" name="" id="" />
           </div>
           <button
-            className="bg-green-400 text-white rounded px-1"
+            className="bg-green-400 text-white rounded px-1 mt-1"
             type="submit"
             onClick={e => {
               e.preventDefault();
-              navigate("../MainPage");
+              // LogIn();
+              navigate("/Main");
             }}
           >
             Войти
           </button>
-          <Link to="/SignIn">Регистрация</Link>
-          <a href="#">Забыли пароль?</a>
+          <Link to="/Registration">Регистрация</Link>
+          <Link to="/Auth/Restore">Забыли пароль?</Link>
         </form>
       </div>
     </main>
