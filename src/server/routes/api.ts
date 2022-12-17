@@ -2,12 +2,12 @@
 import { Request, Response } from "express";
 
 export interface IuserData {
-  name: string;
-  surname: string;
+  name: string | null;
+  surname: string | null;
   tel: string | null;
   email: string | null;
-  dateOfBirth: Date;
-  password: string;
+  dateOfBirth: Date | null;
+  password: string | null;
 }
 
 export const API_URLS = {
@@ -18,7 +18,7 @@ export const API_URLS = {
   login: "/Auth/Login",
   newUser: "/Registration/NewUser",
   logout: "/Auth/Logout",
-}
+};
 
 /**
  * List of API examples.
@@ -31,12 +31,12 @@ export const API_URLS = {
 let smsCode = "";
 let emailCode = "";
 let userData: IuserData = {
-  name: "",
+  name: "admin",
   surname: "",
-  tel: null,
-  email: null,
+  tel: "123",
+  email: "admin@me.ru",
   dateOfBirth: new Date(),
-  password: "",
+  password: "admin", // по-правильному, тут должен быть хеш пароля
 };
 
 export const RequestTelCode = async (req: Request, res: Response) => {
@@ -79,16 +79,26 @@ export const CheckEmailCode = async (req: Request, res: Response) => {
 
 // Далее - неготовые API
 
-export const LogIn = async (req: Request, res: Response) => {
+export const Login = async (req: Request, res: Response) => {
   const payload = req.body;
-  console.log(payload);
-  if ((payload.tel === userData.tel || payload.email === userData.email) && payload.password === userData.password) {
-      res.status(200).send(`User logged in`);
+  // console.log(payload);
+  if (payload.tel || payload.email) {
+    if (payload.password === userData.password && (payload.tel === userData.tel || payload.email === userData.email)) {
+      res
+        .status(200)
+        .send({ userData: userData, login: true, message: `User ${userData.name} ${userData.surname} logged in` });
+    } else return res.status(401).send(`Wrong telephone, email or password`);
   } else res.status(400).send(`Bad request`);
 };
 
-export const SignIn = async (req: Request, res: Response) => {
+export const NewUser = async (req: Request, res: Response) => {
   const payload: IuserData = req.body;
-  console.log(payload);
   userData = payload;
+  Login(req, res);
+};
+
+export const Logout = async (req: Request, res: Response) => {
+  // const payload: IuserData = req.body;
+  // console.log(payload);
+  // userData = payload;
 };

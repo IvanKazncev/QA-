@@ -1,24 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { LogIn } from "src/server/routes/api";
+import { API_URLS } from "../../server/routes/api";
+import { useUserData } from "../hooks/useUserData";
+
 // import { TestAPIFoo } from "../components/TestAPIFoo";
 
 export const Auth: React.FC = () => {
   let navigate = useNavigate();
+  const [userName, setUserName] = useState(""); // userName здесь - это телефон или почта
+  const [password, setPassword] = useState("");
+  const userData = useUserData();
 
-  // const LogIn = async () => {
-  //     let response = await fetch("/Registration/CheckEmailCode", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json;charset=utf-8",
-  //       },
-  //       body: JSON.stringify({  }),
-  //     });
-  //     let resText = await response.text();
-  //     // if (resText === "Email is confirmed") setEmailConfirmed(true);
-  //     // else setEmailConfirmed(false);
-  //     console.log(resText);  
-  // };
+  const Login = async () => {
+    let response = await fetch(API_URLS.login, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+      },
+      body: JSON.stringify({
+        tel: userName,
+        email: userName,
+        password: password,
+      }),
+    });
+    if (response.ok) {
+      let res = await response.json();
+      if (res.login) {
+        userData.setState({ isAuth: true, ...res.userData });
+        navigate("/");
+      }
+    }
+  };
 
   return (
     <main>
@@ -27,19 +39,33 @@ export const Auth: React.FC = () => {
           <h1 className="text-2xl">Вход в аккаунт</h1>
           <div className="flex flex-col">
             <span className="text-sm">Почта или телефон</span>
-            <input className="border-solid border-gray-400 border rounded px-1" type="text" />
+            <input
+              className="border-solid border-gray-400 border rounded px-1"
+              type="text"
+              onChange={e => setUserName(e.target.value)}
+              value={userName}
+              name="userName"
+              id="userName"
+            />
           </div>
           <div className="flex flex-col">
             <span className="text-sm">Пароль</span>
-            <input className="border-solid border-gray-400 border rounded px-1" type="password" name="" id="" />
+            <input
+              className="border-solid border-gray-400 border rounded px-1"
+              type="password"
+              onChange={e => setPassword(e.target.value)}
+              value={password}
+              name="password"
+              id="password"
+            />
           </div>
           <button
             className="bg-green-400 text-white rounded px-1 mt-1"
             type="submit"
             onClick={e => {
               e.preventDefault();
-              // LogIn();
-              navigate("/Main");
+              Login();
+              // navigate("/Main");
             }}
           >
             Войти

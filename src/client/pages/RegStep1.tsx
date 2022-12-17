@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { To, useNavigate } from "react-router-dom";
+import React, { ButtonHTMLAttributes, SyntheticEvent, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useInput from "../hooks/useInput";
 import { DateOfBirthInput } from "../components/DateOfBirthInput";
-import { TestAPIButton } from "../components/TestAPIButton";
+import { useRegData } from "../hooks/useRegData";
 
 export const RegStep1: React.FC = () => {
   let navigate = useNavigate();
@@ -11,29 +11,26 @@ export const RegStep1: React.FC = () => {
   const userSurname = useInput(["isEmpty", "validUserName"]);
   const [userBirthData, setUserBirthData] = useState<Date>(new Date());
 
-  // Test API fetch
-
-  // const sendUserData = (Name: string, Surname: string, BirthData: Date) => {
-  //   let response = fetch("/api", {
-  //     method: "POST",
-  //     headers: {
-  //       DataType: "userData",
-  //     },
-  //   }).then(response => console.log(response.status));
-  // };
-
   useEffect(() => {
     setDataValid(userName.isValid && userSurname.isValid);
   }, [userName.isValid, userSurname.isValid]);
 
-  // const HeandleKeyEnterGoNext = (e: KeyboardEvent, nextDestination: To, dataValid: boolean = true) => {
-  //   if (e.key == "Enter") {
-  //     e.preventDefault();
-  //     if (dataValid) navigate(nextDestination);
-  //   }
-  // };
+  const regData = useRegData();
+  
+  const setRegData = () =>
+    regData.setState({
+      username: userName.value,
+      surname: userSurname.value,
+      dateOfBirth: userBirthData,
+    });
 
-  // const HandleClickNext = (e: MouseEvent) => {}
+  const handleClickNext = async (e: SyntheticEvent) => {
+    e.preventDefault();
+    if (dataValid) {
+      await setRegData();
+      navigate("/Registration/Step2");
+    }
+  };
 
   return (
     <main className="">
@@ -44,10 +41,7 @@ export const RegStep1: React.FC = () => {
           className="flex flex-col max-w-120"
           action=""
           onKeyDown={e => {
-            if (e.key == "Enter") {
-              e.preventDefault();
-              if (dataValid) navigate("/Registration/Step2");
-            }
+            if (e.key == "Enter") {handleClickNext}
           }}
         >
           <span className="text-gray-500 text-center">Имя</span>
@@ -81,29 +75,14 @@ export const RegStep1: React.FC = () => {
               Назад
             </button>
             <button
-              onClick={e => {
-                e.preventDefault();
-                if (dataValid) navigate("/Registration/Step2");
-              }}
-              className={"text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg w-28 " + (dataValid ? "bg-orange-600" : "bg-gray-500")}
+              onClick={handleClickNext}
+              className={
+                "text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg w-28 " +
+                (dataValid ? "bg-orange-600" : "bg-gray-500")
+              }
             >
               Далее
             </button>
-
-            {/* <button
-              onClick={e => {
-                e.preventDefault();
-                console.log(userBirthData);
-              }}
-              className="bg-orange-600 text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg w-28"
-            >
-              Test
-            </button>
-
-            <TestAPIButton /> */}
-
-
-
           </div>
         </form>
       </div>

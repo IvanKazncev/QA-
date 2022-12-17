@@ -1,12 +1,13 @@
 import React, { useState, useEffect, ChangeEvent, useRef, useSyncExternalStore } from "react";
 import { useNavigate } from "react-router-dom";
-import useInput, { IUseInput } from "../hooks/useInput";
+import useInput from "../hooks/useInput";
 import { Emailnput } from "../components/Emailnput";
 import { TelNumberInput } from "../components/TelNumberInput";
 import eye from "../img/eye.svg";
 import eyeSlash from "../img/eye-slash.svg";
-
-// import useTelephoneInput from "../hooks/useTelephoneInput";
+import { useRegData } from "../hooks/useRegData";
+import { API_URLS } from "../../server/routes/api";
+import { useUserData } from "../hooks/useUserData";
 
 export const RegStep2: React.FC = () => {
   let navigate = useNavigate();
@@ -19,10 +20,12 @@ export const RegStep2: React.FC = () => {
   const confirmPassword = useInput(["isEmpty", "validPassword"]);
   const [isFirstPasVisible, setFirstPasVisible] = useState(false);
   const [isSecondPasVisible, setSecondPasVisible] = useState(false);
+  const stepOneRegData = useRegData().regData;
+  const userData = useUserData();
 
   useEffect(() => {
-    setDataValid((isTelConfirmed || email.isValid) && password.isValid && password.value === confirmPassword.value);
-  }, [isTelConfirmed, email.isValid, password.isValid, password.value, confirmPassword.value]);
+    setDataValid((isTelConfirmed || isEmailConfirmed) && password.isValid && password.value === confirmPassword.value);
+  }, [isTelConfirmed, isEmailConfirmed, password.isValid, password.value, confirmPassword.value]);
 
   const toggleFirstPasVisible = () => {
     setFirstPasVisible(!isFirstPasVisible);
@@ -31,7 +34,27 @@ export const RegStep2: React.FC = () => {
     setSecondPasVisible(!isSecondPasVisible);
   };
 
-  // const [name, setName] = useState<string>("");
+  const sendNewUser = async () => {
+    let response = await fetch(API_URLS.newUser, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+      },
+      body: JSON.stringify({
+        name: stepOneRegData.username,
+        surname: stepOneRegData.surname,
+        tel: isTelConfirmed ? telNumber.value : null,
+        email: isEmailConfirmed ? email.value : null,
+        dateOfBirth: stepOneRegData.dateOfBirth,
+        password: password.value,
+      }),
+    });
+    let res = await response.json();
+    if (res.login) {
+      userData.setState({ isAuth: true, ...res.userData });
+      navigate("/");
+    }
+  };
 
   // const unMaskTel = (maskedTel: string) => maskedTel.replace(/\+7|\D/g, "");
 
@@ -101,7 +124,11 @@ export const RegStep2: React.FC = () => {
               onClick={toggleFirstPasVisible}
               className="absolute top-[29px] right-2"
             />
-            <span className="text-gray-500 text-xs text-left">{"Пароль должен состоять из букв латинского алфавита (A-z), арабских цифр (0-9) и специальных символов: ( . , : ; ? ! * + % - < > @ [ ] { } / \\ _ {} $ # )"}</span>
+            <span className="text-gray-500 text-xs text-left">
+              {
+                "Пароль должен состоять из букв латинского алфавита (A-z), арабских цифр (0-9) и специальных символов: ( . , : ; ? ! * + % - < > @ [ ] { } / \\ _ {} $ # )"
+              }
+            </span>
           </label>
           <label className="text-gray-500 text-center flex flex-col relative">
             Повторите пароль
@@ -134,12 +161,13 @@ export const RegStep2: React.FC = () => {
             <button
               onClick={e => {
                 e.preventDefault();
-                if (dataValid) navigate("/Main");
+                sendNewUser();
               }}
               className={
                 "text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg w-28 " +
                 (dataValid ? "bg-orange-600" : "bg-gray-500")
               }
+              disabled={!dataValid}
             >
               Далее
             </button>

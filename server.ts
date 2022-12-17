@@ -6,7 +6,7 @@ import compression from "compression";
 import serveStatic from "serve-static";
 import { createServer as createViteServer } from "vite";
 import bodyParser from "body-parser";
-import { API_URLS, CheckEmailCode, CheckTelCode, LogIn, RequestEmailCode, RequestTelCode, SignIn } from "./src/server/routes/api"
+import { API_URLS, CheckEmailCode, CheckTelCode, Login, Logout, RequestEmailCode, RequestTelCode, NewUser } from "./src/server/routes/api"
 
 const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
 
@@ -63,9 +63,9 @@ async function createServer(isProd = process.env.NODE_ENV === "production") {
   app.post(API_URLS.requestEmailCode, RequestEmailCode)
   app.post(API_URLS.checkEmailCode, CheckEmailCode)
 
-  app.post(API_URLS.login, LogIn)
-  app.post(API_URLS.newUser, SignIn)
-  app.post(API_URLS.logout, SignIn)
+  app.post(API_URLS.login, Login)
+  app.post(API_URLS.newUser, NewUser)
+  app.post(API_URLS.logout, Logout)
 
   app.use("*", async (req: Request, res: Response, next: NextFunction) => {
     const url = req.originalUrl;
