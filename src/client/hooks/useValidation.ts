@@ -24,7 +24,7 @@ const useValidation = (value: any, validations: validations) => {
         case "validPassword": {
             // const regExp = /^.{1,20}$/; // только для ускорения тестов
             // const regExp = /^(?=.*[\d])(?=.*[A-Za-z])(?=.*[.,:;?!*+%\-<>@[\]{}/\\_{}$#]).{8}$/;
-            const regExp = /^(?=.*?[\d])(?=.*?[A-Za-z])(?=.*?[.,:;?!*+%\-<>@[\]{}/\\_{}$#])[\dA-Za-z.,:;?!*+%\-<>@[\]{}/\\_{}$#]{8,14}$/;
+            const regExp = /^(?=.*?[\d])(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[.,:;?!*+%\-<>@[\]{}/\\_{}$#])[\dA-Za-z.,:;?!*+%\-<>@[\]{}/\\_{}$#]{8,14}$/;
           if (regExp.test(value)) setPassValid(true);
           else {
             setPassValid(false);

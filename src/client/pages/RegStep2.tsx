@@ -44,7 +44,7 @@ export const RegStep2: React.FC = () => {
         name: stepOneRegData.username,
         surname: stepOneRegData.surname,
         tel: isTelConfirmed ? telNumber.value : null,
-        email: isEmailConfirmed ? email.value : null,
+        email: isEmailConfirmed ? email.value.toLowerCase() : null,
         dateOfBirth: stepOneRegData.dateOfBirth,
         password: password.value,
       }),

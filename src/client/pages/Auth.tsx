@@ -19,7 +19,7 @@ export const Auth: React.FC = () => {
       },
       body: JSON.stringify({
         tel: userName,
-        email: userName,
+        email: userName.toLowerCase(),
         password: password,
       }),
     });

@@ -19,7 +19,7 @@ export const Landing: React.FC = () => {
         <p className="text-xl text-center">Регистрируйтесь сами и смотрите сами</p>
         <button
           type="button"
-          onClick={() => navigate("/Auth")}
+          onClick={() => navigate("/Registration")}
           className="bg-orange-600 text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg"
         >
           Поступить в IU
