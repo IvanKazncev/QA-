@@ -51,9 +51,18 @@ export const RegStep2: React.FC = () => {
     });
     let res = await response.json();
     if (res.login) {
-      userData.setState({ isAuth: true, ...res.userData });
-      navigate("/");
+      userData.setState({
+        isAuth: true,
+        ...res.userData,
+        dateOfBirth: new Date(Date.parse(res.userData.dateOfBirth)),
+      });
+      navigate("/?newUser=true");
     }
+  };
+
+  const GoReg = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    sendNewUser();
   };
 
   // const unMaskTel = (maskedTel: string) => maskedTel.replace(/\+7|\D/g, "");
@@ -95,8 +104,7 @@ export const RegStep2: React.FC = () => {
           action=""
           onKeyDown={e => {
             if (e.key == "Enter" && dataValid) {
-              e.preventDefault();
-              navigate("/MainPage");
+              GoReg(e);
             }
           }}
         >
@@ -159,10 +167,7 @@ export const RegStep2: React.FC = () => {
               Назад
             </button>
             <button
-              onClick={e => {
-                e.preventDefault();
-                sendNewUser();
-              }}
+              onClick={GoReg}
               className={
                 "text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg w-28 " +
                 (dataValid ? "bg-orange-600" : "bg-gray-500")

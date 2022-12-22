@@ -12,6 +12,7 @@ interface TelNumberInputProps {
 
 export const TelNumberInput: React.FC<TelNumberInputProps> = ({ telNumber, isTelConfirmed, setTelConfirmed }) => {
   const [isCodeSended, setIsCodeSended] = useState(false);
+  const [codeInputValue, setCodeInputValue] = useState("");
 
   const requestTelCode = async (telNumber: string) => {
     let response = await fetch(API_URLS.requestTelCode, {
@@ -28,8 +29,12 @@ export const TelNumberInput: React.FC<TelNumberInputProps> = ({ telNumber, isTel
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (!isCodeSended) requestTelCode(telNumber.value)
-    else setIsCodeSended(false);
+    if (!isCodeSended) requestTelCode(telNumber.value);
+    else {
+      setIsCodeSended(false);
+      setCodeInputValue("");
+      setTelConfirmed(false);
+    }
   };
 
   const checkCode = async (code: string) => {
@@ -48,6 +53,7 @@ export const TelNumberInput: React.FC<TelNumberInputProps> = ({ telNumber, isTel
 
   const handleChangeCodeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length === 4) checkCode(e.target.value);
+    setCodeInputValue(e.target.value);
   };
 
   return (
@@ -73,8 +79,10 @@ export const TelNumberInput: React.FC<TelNumberInputProps> = ({ telNumber, isTel
         <input
           name="codeInput"
           onChange={handleChangeCodeInput}
+          value={codeInputValue}
           className={
-            "flex-1 border-solid border-gray-400 border rounded px-1 " + (isTelConfirmed ? "bg-green-200" : "bg-blue-100")
+            "flex-1 border-solid border-gray-400 border rounded px-1 " +
+            (isTelConfirmed ? "bg-green-200" : "bg-blue-100")
           }
           type="text"
           placeholder="Введите код из SMS"

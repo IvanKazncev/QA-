@@ -9,6 +9,7 @@ import { Header } from "./components/Header";
 import { Auth } from "./pages/Auth";
 import { Restore } from "./pages/Restore";
 import { useUserData } from "./hooks/useUserData";
+import { Invite } from "./pages/Invite";
 
 export const App = () => {
   let isUserAuth = useUserData().isAuth;
@@ -21,8 +22,11 @@ export const App = () => {
         <Route path="/Auth" element={<Auth />}></Route>
         <Route path="/Auth/Restore" element={<Restore />}></Route>
         <Route path="/Registration" element={<Navigate to={"/Registration/Step1"} />}></Route>
-        <Route path="/Registration/Step1" element={<RegStep1 />}></Route>
+        <Route path="/Registration/Step1" element={<RegStep1 />}>
+          <Route path=":invite"></Route>
+        </Route>
         <Route path="/Registration/Step2" element={<RegStep2 />}></Route>
+        <Route path="/Invite" element={<Invite />}></Route>
       </Routes>
     </ContextWrapper>
   );

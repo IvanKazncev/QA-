@@ -12,6 +12,7 @@ interface EmailInputProps {
 
 export const Emailnput: React.FC<EmailInputProps> = ({ email, isEmailConfirmed, setEmailConfirmed }) => {
   const [isCodeSended, setIsCodeSended] = useState(false);
+  const [codeInputValue, setCodeInputValue] = useState("");
 
   const requestEmailCode = async (email: string) => {
     let response = await fetch(API_URLS.requestEmailCode, {
@@ -28,8 +29,12 @@ export const Emailnput: React.FC<EmailInputProps> = ({ email, isEmailConfirmed, 
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (!isCodeSended) requestEmailCode(email.value)
-    else setIsCodeSended(false);
+    if (!isCodeSended) requestEmailCode(email.value);
+    else {
+      setIsCodeSended(false);
+      setCodeInputValue("");
+      setEmailConfirmed(false);
+    }
   };
 
   const checkEmailCode = async (code: string) => {
@@ -47,6 +52,7 @@ export const Emailnput: React.FC<EmailInputProps> = ({ email, isEmailConfirmed, 
   };
 
   const handleChangeCodeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCodeInputValue(e.target.value);
     if (e.target.value.length === 4) checkEmailCode(e.target.value);
   };
 
@@ -73,6 +79,7 @@ export const Emailnput: React.FC<EmailInputProps> = ({ email, isEmailConfirmed, 
         <input
           name="codeInput"
           onChange={handleChangeCodeInput}
+          value={codeInputValue}
           className={
             "flex-1 border-solid border-gray-400 border rounded px-1 " +
             (isEmailConfirmed ? "bg-green-200" : "bg-blue-100")

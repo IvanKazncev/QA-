@@ -1,5 +1,5 @@
 import React, { ButtonHTMLAttributes, SyntheticEvent, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import useInput from "../hooks/useInput";
 import { DateOfBirthInput } from "../components/DateOfBirthInput";
 import { useRegData } from "../hooks/useRegData";
@@ -10,13 +10,16 @@ export const RegStep1: React.FC = () => {
   const userName = useInput(["isEmpty", "validUserName"]);
   const userSurname = useInput(["isEmpty", "validUserName"]);
   const [userBirthData, setUserBirthData] = useState<Date>(new Date());
+  const [isInvited] = useSearchParams();
+  const needResponsibility = isInvited.get("isInvited") === "true";
+  const [isResponsible, setResponsible] = useState(false);
 
   useEffect(() => {
-    setDataValid(userName.isValid && userSurname.isValid);
-  }, [userName.isValid, userSurname.isValid]);
+    setDataValid(userName.isValid && userSurname.isValid && (!needResponsibility || isResponsible));
+  }, [userName.isValid, userSurname.isValid, needResponsibility, isResponsible]);
 
   const regData = useRegData();
-  
+
   const setRegData = () =>
     regData.setState({
       username: userName.value,
@@ -27,7 +30,7 @@ export const RegStep1: React.FC = () => {
   const handleClickNext = async (e: SyntheticEvent) => {
     e.preventDefault();
     if (dataValid) {
-      await setRegData();
+      setRegData();
       navigate("/Registration/Step2");
     }
   };
@@ -36,39 +39,45 @@ export const RegStep1: React.FC = () => {
     <main className="">
       <div className="flex flex-col items-center">
         <h1 className="text-5xl border-2 rounded border-black px-2 pt-2 pb-4 text-center w-full">Регистрация</h1>
-        <p className="text-gray-500 text-center">Укажи имя и фамилию</p>
+        <p className="text-gray-500 text-center">Введите имя и фамилию</p>
         <form
           className="flex flex-col max-w-120"
           action=""
           onKeyDown={e => {
-            if (e.key == "Enter") {handleClickNext}
+            if (e.key == "Enter") {
+              handleClickNext;
+            }
           }}
         >
-          <span className="text-gray-500 text-center">Имя</span>
           <input
             value={userName.value}
             onChange={userName.onChange}
             // onBlur={userName.onBlur}
-            className="border-solid border-gray-400 border rounded px-1 bg-blue-100"
+            className="border-solid border-gray-400 border rounded px-1 bg-blue-100 mb-2"
             type="text"
-            placeholder="Анна"
+            placeholder="Имя"
           />
-          <span className="text-gray-500 text-center">Фамилия</span>
           <input
             value={userSurname.value}
             onChange={userSurname.onChange}
             // onBlur={userSurname.onBlur}
-            className="border-solid border-gray-400 border rounded px-1 bg-blue-100"
+            className="border-solid border-gray-400 border rounded px-1 bg-blue-100 mb-2"
             type="text"
-            placeholder="Ильина"
+            placeholder="Фамилия"
           />
-          <span className="text-gray-500 text-center">Дата рождения</span>
+          <span className="text-gray-500 text-center mb-2">Дата рождения</span>
           <DateOfBirthInput setUserBirthData={setUserBirthData} />
+          {needResponsibility && (
+            <label className="text-center mt-2">
+              <input className="mx-1" type="checkbox" checked={isResponsible} onChange={() => setResponsible(!isResponsible)}/>
+              Беру всю ответственность на себя
+            </label>
+          )}
           <div className="flex gap-5 self-center my-5">
             <button
               onClick={e => {
                 e.preventDefault();
-                navigate("/Auth");
+                navigate("/");
               }}
               className="border-solid border-gray-400 border text-sm leading-6 font-medium py-2 px-3 rounded-lg w-28"
             >

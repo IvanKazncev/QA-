@@ -26,7 +26,11 @@ export const Auth: React.FC = () => {
     if (response.ok) {
       let res = await response.json();
       if (res.login) {
-        userData.setState({ isAuth: true, ...res.userData });
+        userData.setState({
+          isAuth: true,
+          ...res.userData,
+          dateOfBirth: new Date(Date.parse(res.userData.dateOfBirth)), 
+        });
         navigate("/");
       }
     }
