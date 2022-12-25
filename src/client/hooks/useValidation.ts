@@ -5,8 +5,9 @@ export type validations = Array<"isEmpty" | "validPassword" | "validUserName" | 
 const useValidation = (value: any, validations: validations) => {
   const [isEmpty, setEmpty] = useState(false);
   const [isPassValid, setPassValid] = useState(false);
-  const [isNickname, setNickname] = useState(false);
-  const [isValidEmail, setValidEmail] = useState(false);
+  const [isNickValid, setNickValid] = useState(false);
+  const [isEmailValid, setEmailValid] = useState(false);
+  const [isTelValid, setTelValid] = useState(false);
   const [isValid, setValid] = useState(false);
 
   useEffect(() => {
@@ -22,8 +23,8 @@ const useValidation = (value: any, validations: validations) => {
           break;
         }
         case "validPassword": {
-            // const regExp = /^.{1,20}$/; // только для ускорения тестов
-            // const regExp = /^(?=.*[\d])(?=.*[A-Za-z])(?=.*[.,:;?!*+%\-<>@[\]{}/\\_{}$#]).{8}$/;
+          // Пароль должен содержать хотя бы одну цифру, одну заглавную и прописную латинскую буквы, один спецсимвол.
+          // Прочие символы не допускаются. Длина пароля от 8 до 14 символов
             const regExp = /^(?=.*?[\d])(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[.,:;?!*+%\-<>@[\]{}/\\_{}$#])[\dA-Za-z.,:;?!*+%\-<>@[\]{}/\\_{}$#]{8,14}$/;
           if (regExp.test(value)) setPassValid(true);
           else {
@@ -33,31 +34,28 @@ const useValidation = (value: any, validations: validations) => {
           break;
         }
         case "validUserName": {
-          // const regExp = /^.{1,20}$/; // только для ускорения тестов
           const regExp = /^[А-ЯЁA-Z][а-яА-ЯёЁa-zA-Z-]{0,29}$/; // от 1 до 20 символов от латиницы и кириллицы
-          if (regExp.test(value)) setNickname(true);
+          if (regExp.test(value)) setNickValid(true);
           else {
-            setNickname(false);
+            setNickValid(false);
             valid = false;
           }
           break;
         }
         case "validEmail": {
-            // const regExp = /^.{1,20}$/; // только для ускорения тестов
           const regExp = /^.{1,}@.{1,}\..{1,}$/;
-          if (regExp.test(value)) setValidEmail(true);
+          if (regExp.test(value)) setEmailValid(true);
           else {
-            setValidEmail(false);
+            setEmailValid(false);
             valid = false;
           }
           break;
         }
         case "validTelephone": {
-            // const regExp = /^.{1,20}$/; // только для ускорения тестов
             const regExp = /^[+][7]\d{10}$/;
-          if (regExp.test(value)) setValidEmail(true);
+          if (regExp.test(value)) setTelValid(true);
           else {
-            setValidEmail(false);
+            setTelValid(false);
             valid = false;
           }
           break;
@@ -71,6 +69,11 @@ const useValidation = (value: any, validations: validations) => {
   }, [value, validations]);
 
   return {
+    isEmpty,
+    isPassValid,
+    isNickValid,
+    isEmailValid,
+    isTelValid,
     isValid,
   };
 };
