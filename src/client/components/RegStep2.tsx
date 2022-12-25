@@ -1,15 +1,19 @@
-import React, { useState, useEffect, ChangeEvent, useRef, useSyncExternalStore } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useInput from "../hooks/useInput";
-import { Emailnput } from "../components/Emailnput";
-import { TelNumberInput } from "../components/TelNumberInput";
+import { Emailnput } from "./Emailnput";
+import { TelNumberInput } from "./TelNumberInput";
 import eye from "../img/eye.svg";
 import eyeSlash from "../img/eye-slash.svg";
 import { useRegData } from "../hooks/useRegData";
 import { API_URLS } from "../../server/routes/api";
 import { useUserData } from "../hooks/useUserData";
 
-export const RegStep2: React.FC = () => {
+export interface IRegStep2 {
+  backStep: () => void;
+}
+
+export const RegStep2: React.FC<IRegStep2> = ({ backStep }) => {
   let navigate = useNavigate();
   const [dataValid, setDataValid] = useState<boolean>(false);
   const [isTelConfirmed, setTelConfirmed] = useState<boolean>(false);
@@ -160,7 +164,7 @@ export const RegStep2: React.FC = () => {
             <button
               onClick={e => {
                 e.preventDefault();
-                navigate("/Registration/Step1");
+                backStep();
               }}
               className="border-solid border-gray-400 border text-sm leading-6 font-medium py-2 px-3 rounded-lg w-28"
             >
@@ -169,8 +173,7 @@ export const RegStep2: React.FC = () => {
             <button
               onClick={GoReg}
               className={
-                "text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg w-28 " +
-                (dataValid ? "bg-orange-600" : "bg-gray-500")
+                "text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg w-28 bg-orange-600 disabled:bg-gray-500"
               }
               disabled={!dataValid}
             >

@@ -1,22 +1,27 @@
-import React, { ButtonHTMLAttributes, SyntheticEvent, useEffect, useState } from "react";
+import React, { SyntheticEvent, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import useInput from "../hooks/useInput";
-import { DateOfBirthInput } from "../components/DateOfBirthInput";
+import { DateOfBirthInput } from "./DateOfBirthInput";
 import { useRegData } from "../hooks/useRegData";
+import { isAdult } from "./functions/isAdult";
 
-export const RegStep1: React.FC = () => {
+export interface IRegStep1 {
+  nextStep: () => void;
+}
+
+export const RegStep1: React.FC<IRegStep1> = ({ nextStep }) => {
   let navigate = useNavigate();
   const [dataValid, setDataValid] = useState<boolean>(false);
   const userName = useInput(["isEmpty", "validUserName"]);
   const userSurname = useInput(["isEmpty", "validUserName"]);
   const [userBirthData, setUserBirthData] = useState<Date>(new Date());
   const [isInvited] = useSearchParams();
-  const needResponsibility = isInvited.get("isInvited") === "true";
+  const needResponsibility = isInvited.get("isInvitedForParent") === "true";
   const [isResponsible, setResponsible] = useState(false);
 
   useEffect(() => {
-    setDataValid(userName.isValid && userSurname.isValid && (!needResponsibility || isResponsible));
-  }, [userName.isValid, userSurname.isValid, needResponsibility, isResponsible]);
+    setDataValid(userName.isValid && userSurname.isValid && (!needResponsibility || (isResponsible && isAdult(userBirthData))));
+  }, [userName.isValid, userSurname.isValid, needResponsibility, isResponsible, userBirthData]);
 
   const regData = useRegData();
 
@@ -31,7 +36,7 @@ export const RegStep1: React.FC = () => {
     e.preventDefault();
     if (dataValid) {
       setRegData();
-      navigate("/Registration/Step2");
+      nextStep();
     }
   };
 
@@ -69,7 +74,12 @@ export const RegStep1: React.FC = () => {
           <DateOfBirthInput setUserBirthData={setUserBirthData} />
           {needResponsibility && (
             <label className="text-center mt-2">
-              <input className="mx-1" type="checkbox" checked={isResponsible} onChange={() => setResponsible(!isResponsible)}/>
+              <input
+                className="mx-1"
+                type="checkbox"
+                checked={isResponsible}
+                onChange={() => setResponsible(!isResponsible)}
+              />
               Беру всю ответственность на себя
             </label>
           )}
@@ -86,9 +96,9 @@ export const RegStep1: React.FC = () => {
             <button
               onClick={handleClickNext}
               className={
-                "text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg w-28 " +
-                (dataValid ? "bg-orange-600" : "bg-gray-500")
+                "text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg w-28 bg-orange-600 disabled:bg-gray-500"
               }
+              disabled={!dataValid}
             >
               Далее
             </button>

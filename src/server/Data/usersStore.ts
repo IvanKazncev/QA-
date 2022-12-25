@@ -24,7 +24,7 @@ export const usersStore = {
       tel: "+78888888888",
       email: "user@me.ru",
       // dateOfBirth: new Date(), // закоментировано на время теста
-      dateOfBirth: new Date(2010, 1), // на время теста
+      dateOfBirth: new Date(2000, 1), // на время теста
       password: "me", // по-правильному, тут должен быть хеш пароля
     },
   ],
