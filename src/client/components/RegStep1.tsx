@@ -18,9 +18,12 @@ export const RegStep1: React.FC<IRegStep1> = ({ nextStep }) => {
   const [isInvited] = useSearchParams();
   const needResponsibility = isInvited.get("isInvitedForParent") === "true";
   const [isResponsible, setResponsible] = useState(false);
+  const [isCheckboxDirty, setCheckboxDirty] = useState(false);
 
   useEffect(() => {
-    setDataValid(userName.isValid && userSurname.isValid && (!needResponsibility || (isResponsible && isAdult(userBirthData))));
+    setDataValid(
+      userName.isValid && userSurname.isValid && (!needResponsibility || (isResponsible && isAdult(userBirthData))),
+    );
   }, [userName.isValid, userSurname.isValid, needResponsibility, isResponsible, userBirthData]);
 
   const regData = useRegData();
@@ -40,6 +43,12 @@ export const RegStep1: React.FC<IRegStep1> = ({ nextStep }) => {
     }
   };
 
+  const setInputColour = (dirty: boolean, valid: boolean) => {
+    if (valid) return "bg-green-200";
+    else if (!dirty) return "bg-blue-100";
+    else return "bg-red-100";
+  };
+
   return (
     <main className="">
       <div className="flex flex-col items-center">
@@ -57,32 +66,72 @@ export const RegStep1: React.FC<IRegStep1> = ({ nextStep }) => {
           <input
             value={userName.value}
             onChange={userName.onChange}
-            // onBlur={userName.onBlur}
-            className="border-solid border-gray-400 border rounded px-1 bg-blue-100 mb-2"
+            onBlur={userName.onBlur}
+            className={
+              "border-solid border-gray-400 border rounded px-1 mb-2 " +
+              setInputColour(userName.isDirty, userName.isValid)
+            }
             type="text"
             placeholder="Имя"
           />
+          <span
+            className="bg-red-200 mb-3 px-1 rounded text-sm text-red-800 border border-red-800"
+            hidden={!userName.isDirty || userName.isValid}
+          >
+            {userName.isEmpty && "Введите ваше имя"}
+            {!userName.isEmpty && !userName.isNickValid && "Некорректное имя"}
+          </span>
+
           <input
             value={userSurname.value}
             onChange={userSurname.onChange}
-            // onBlur={userSurname.onBlur}
-            className="border-solid border-gray-400 border rounded px-1 bg-blue-100 mb-2"
+            onBlur={userSurname.onBlur}
+            className={
+              "border-solid border-gray-400 border rounded px-1 mb-2 " +
+              setInputColour(userSurname.isDirty, userSurname.isValid)
+            }
             type="text"
             placeholder="Фамилия"
           />
+          <span
+            className="bg-red-200 mb-3 px-1 rounded text-sm text-red-800 border border-red-800"
+            hidden={!userSurname.isDirty || userSurname.isValid}
+          >
+            {userSurname.isEmpty && "Введите вашу фамилию"}
+            {!userSurname.isEmpty && !userSurname.isNickValid && "Некорректная фамилия"}
+          </span>
+
           <span className="text-gray-500 text-center mb-2">Дата рождения</span>
           <DateOfBirthInput setUserBirthData={setUserBirthData} />
           {needResponsibility && (
-            <label className="text-center mt-2">
-              <input
-                className="mx-1"
-                type="checkbox"
-                checked={isResponsible}
-                onChange={() => setResponsible(!isResponsible)}
-              />
-              Беру всю ответственность на себя
-            </label>
+            <>
+              <span
+                className="bg-red-200 mt-2 px-1 rounded text-sm text-red-800 border border-red-800"
+                hidden={isAdult(userBirthData) || !isCheckboxDirty}
+              >
+                {!isAdult(userBirthData) && "Вы должны быть старше 18 лет"}
+              </span>
+
+              <label className="text-center mt-2">
+                <input
+                  className="mx-1"
+                  type="checkbox"
+                  checked={isResponsible}
+                  onChange={() => setResponsible(!isResponsible)}
+                  onBlur={() => setCheckboxDirty(true)}
+                />
+                Беру всю ответственность на себя
+              </label>
+
+              <span
+                className="bg-red-200 mt-2 px-1 rounded text-sm text-red-800 border border-red-800"
+                hidden={isResponsible || !isCheckboxDirty}
+              >
+                {!isResponsible && "Вы должны принять ответственность"}
+              </span>
+            </>
           )}
+
           <div className="flex gap-5 self-center my-5">
             <button
               onClick={e => {

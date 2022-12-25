@@ -71,35 +71,24 @@ export const CheckEmailCode = async (req: Request, res: Response) => {
   } else res.status(400).send(`Bad request`);
 };
 
-// export const Login = async (req: Request, res: Response) => {
-//   const payload = req.body;
-//   // console.log(payload);
-//   if (payload.tel || payload.email) {
-//     if (payload.password === userData.password && (payload.tel === userData.tel || payload.email === userData.email)) {
-//       res
-//         .status(200)
-//         .send({ userData: userData, login: true, message: `User ${userData.name} ${userData.surname} logged in` });
-//     } else return res.status(401).send(`Wrong telephone, email or password`);
-//   } else res.status(400).send(`Bad request`);
-// };
-
 export const Login = async (req: Request, res: Response) => {
   const payload = req.body;
-  // console.log(payload);
   if (payload.tel || payload.email) {
     let user = usersStore.findUser(payload.tel) || usersStore.findUser(payload.email);
     if (user) {
       if (payload.password === user.password) {
         res.status(200).send({ userData: user, login: true, message: `User ${user.name} ${user.surname} logged in` });
-      } else return res.status(401).send(`Wrong telephone, email or password`);
-    }
+      } else {
+        return res.status(401).send(`Wrong telephone, email or password`);
+      }
+    } else return res.status(401).send(`User not found`);
   } else return res.status(400).send(`Bad request`);
 };
 
 export const NewUser = async (req: Request, res: Response) => {
   const payload: IUserData = req.body;
   if (payload.tel && usersStore.findUser(payload.tel))
-  return res.status(400).send({ message: `User with that telephone already exist` });
+    return res.status(400).send({ message: `User with that telephone already exist` });
   if (payload.email && usersStore.findUser(payload.email))
     return res.status(400).send({ message: `User with that email already exist` });
   usersStore.addUser(payload);
