@@ -4,6 +4,7 @@ import useInput from "../hooks/useInput";
 import { DateOfBirthInput } from "./DateOfBirthInput";
 import { useRegData } from "../hooks/useRegData";
 import { isAdult } from "./functions/isAdult";
+import { setInputColour } from "./functions/setInputColour";
 
 export interface IRegStep1 {
   nextStep: () => void;
@@ -43,11 +44,6 @@ export const RegStep1: React.FC<IRegStep1> = ({ nextStep }) => {
     }
   };
 
-  const setInputColour = (dirty: boolean, valid: boolean) => {
-    if (valid) return "bg-green-200";
-    else if (!dirty) return "bg-blue-100";
-    else return "bg-red-100";
-  };
 
   return (
     <main className="">

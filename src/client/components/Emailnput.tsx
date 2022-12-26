@@ -57,12 +57,13 @@ export const Emailnput: React.FC<EmailInputProps> = ({ email, isEmailConfirmed, 
   };
 
   return (
-    <div>
+    <>
       <div className="flex gap-2">
         <input
           name="email"
           value={email.value}
           onChange={email.onChange}
+          onBlur={email.onBlur}
           className={"flex-1 border-solid border-gray-400 border rounded px-1 bg-blue-100"}
           type="email"
           placeholder="E-mail"
@@ -90,6 +91,6 @@ export const Emailnput: React.FC<EmailInputProps> = ({ email, isEmailConfirmed, 
           hidden={!isCodeSended}
         />
       </div>
-    </div>
+    </>
   );
 };

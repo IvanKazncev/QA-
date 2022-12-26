@@ -8,6 +8,7 @@ import eyeSlash from "../img/eye-slash.svg";
 import { useRegData } from "../hooks/useRegData";
 import { API_URLS } from "../../server/routes/api";
 import { useUserData } from "../hooks/useUserData";
+import { setInputColour } from "./functions/setInputColour";
 
 export interface IRegStep2 {
   backStep: () => void;
@@ -115,18 +116,33 @@ export const RegStep2: React.FC<IRegStep2> = ({ backStep }) => {
           <span className="text-gray-500 text-center">Введите номер телефона</span>
           <TelNumberInput telNumber={telNumber} setTelConfirmed={setTelConfirmed} isTelConfirmed={isTelConfirmed} />
 
+          <span
+            className="bg-red-200 mt-2 px-1 rounded text-sm text-red-800 border border-red-800"
+            hidden={!telNumber.isDirty || telNumber.isValid || isEmailConfirmed}
+          >
+            {"Номер телефона не соответствует требованиям"}
+          </span>
+
+
           <span className="text-gray-500 text-center">Или</span>
           <span className="text-gray-500 text-center">E-mail</span>
           <Emailnput email={email} setEmailConfirmed={setEmailConfirmed} isEmailConfirmed={isEmailConfirmed} />
+          
+          <span
+            className="bg-red-200 mt-2 px-1 rounded text-sm text-red-800 border border-red-800"
+            hidden={!email.isDirty || email.isValid || isTelConfirmed}
+          >
+            {"Email не соответствует требованиям"}
+          </span>
 
           <label className="text-gray-500 text-center flex flex-col relative">
             Придумайте пароль
             <input
               value={password.value}
               onChange={password.onChange}
+              onBlur={password.onBlur}
               className={
-                "border-solid border-gray-400 border rounded px-1 " +
-                (password.isValid ? "bg-green-200" : "bg-blue-100")
+                "border-solid border-gray-400 border rounded px-1 " + setInputColour(password.isDirty, password.isValid)
               }
               type={isFirstPasVisible ? "text" : "password"}
               placeholder="Придумайте пароль"
@@ -142,14 +158,26 @@ export const RegStep2: React.FC<IRegStep2> = ({ backStep }) => {
               }
             </span>
           </label>
+
+          <span
+            className="bg-red-200 mt-2 px-1 rounded text-sm text-red-800 border border-red-800"
+            hidden={!password.isDirty || password.isValid}
+          >
+            {"Пароль не соответствует требованиям"}
+          </span>
+
           <label className="text-gray-500 text-center flex flex-col relative">
             Повторите пароль
             <input
               value={confirmPassword.value}
               onChange={confirmPassword.onChange}
+              onBlur={confirmPassword.onBlur}
               className={
                 "border-solid border-gray-400 border rounded px-1 " +
-                (password.value === confirmPassword.value && confirmPassword.isValid ? "bg-green-200" : "bg-blue-100")
+                setInputColour(
+                  confirmPassword.isDirty && password.isDirty,
+                  password.value === confirmPassword.value && confirmPassword.isValid,
+                )
               }
               type={isSecondPasVisible ? "text" : "password"}
               placeholder="Повторите пароль"
@@ -160,6 +188,14 @@ export const RegStep2: React.FC<IRegStep2> = ({ backStep }) => {
               className="absolute top-[29px] right-2"
             />
           </label>
+
+          <span
+            className="bg-red-200 mt-2 px-1 rounded text-sm text-red-800 border border-red-800"
+            hidden={!confirmPassword.isDirty || !password.isDirty || confirmPassword.value === password.value}
+          >
+            {"Пароли должны совпадать"}
+          </span>
+
           <div className="flex gap-5 self-center my-5">
             <button
               onClick={e => {

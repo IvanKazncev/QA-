@@ -57,12 +57,13 @@ export const TelNumberInput: React.FC<TelNumberInputProps> = ({ telNumber, isTel
   };
 
   return (
-    <div>
+    <>
       <div className="flex gap-2">
         <input
           name="telNumber"
           value={telNumber.value}
           onChange={telNumber.onChange}
+          onBlur={telNumber.onBlur}
           className={"flex-1 border-solid border-gray-400 border rounded px-1 bg-blue-100"}
           type="tel"
           placeholder="+7 999 999 9999"
@@ -90,6 +91,6 @@ export const TelNumberInput: React.FC<TelNumberInputProps> = ({ telNumber, isTel
           hidden={!isCodeSended}
         />
       </div>
-    </div>
+    </>
   );
 };
