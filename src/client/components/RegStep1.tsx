@@ -36,14 +36,13 @@ export const RegStep1: React.FC<IRegStep1> = ({ nextStep }) => {
       dateOfBirth: userBirthData,
     });
 
-  const handleClickNext = async (e: SyntheticEvent) => {
+  const handleClickNext = (e: SyntheticEvent) => {
     e.preventDefault();
     if (dataValid) {
       setRegData();
       nextStep();
     }
   };
-
 
   return (
     <main className="">
@@ -55,7 +54,7 @@ export const RegStep1: React.FC<IRegStep1> = ({ nextStep }) => {
           action=""
           onKeyDown={e => {
             if (e.key == "Enter") {
-              handleClickNext;
+              handleClickNext(e);
             }
           }}
         >

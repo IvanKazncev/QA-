@@ -20,42 +20,57 @@ export const ModalSendInvite: React.FC<PropsWithChildren<IModalPropsInvite>> = (
 
   return (
     <Modal isVisible={isVisible} setVisible={setVisible}>
-      <span>
-        {isAdult
-          ? "Пригласите пользователя в рабочую группу"
-          : "Чтобы разблокировать доступ к контенту, необходимо согласие родителя."}
-      </span>
-      <label className="flex flex-col">
-        {isAdult
-          ? "Введите номер телефона или email, чтобы пригласить нового участника семейной группы"
-          : "Введите номер телефона или email, чтобы пригласить родителя"}
-        <input
-          type="text"
-          className="border-solid border-gray-400 border rounded px-1 "
-          value={input.value}
-          onChange={input.onChange}
-          onBlur={input.onBlur}
-        />
-      </label>
-      <div>
-        <button
-          className="text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg bg-orange-600 mx-2"
-          onClick={() => setVisible(false)}
-        >
-          Отмена
-        </button>
-        <button
-          className="text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg bg-orange-600 mx-2 disabled:bg-gray-500"
-          onClick={() => {
-            sendInvitation();
-            navigate(isAdult ? "/Invite?forParent=false" : "/Invite?forParent=true");
-            logout();
-          }}
-          disabled={!(input.isEmailValid || input.isTelValid)}
-        >
-          Отправить приглашение
-        </button>
-      </div>
+      <form
+        action=""
+        className="flex flex-col justify-center items-center text-center gap-2"
+        onKeyDown={e => {
+          if (e.key == "Enter") {
+            e.preventDefault();
+            if (input.isEmailValid || input.isTelValid) {
+              sendInvitation();
+              navigate(isAdult ? "/Invite?forParent=false" : "/Invite?forParent=true");
+              logout();
+            }
+          }
+        }}
+      >
+        <span>
+          {isAdult
+            ? "Пригласите пользователя в рабочую группу"
+            : "Чтобы разблокировать доступ к контенту, необходимо согласие родителя."}
+        </span>
+        <label className="flex flex-col">
+          {isAdult
+            ? "Введите номер телефона или email, чтобы пригласить нового участника семейной группы"
+            : "Введите номер телефона или email, чтобы пригласить родителя"}
+          <input
+            type="text"
+            className="border-solid border-gray-400 border rounded px-1 "
+            value={input.value}
+            onChange={input.onChange}
+            onBlur={input.onBlur}
+          />
+        </label>
+        <div>
+          <button
+            className="text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg bg-orange-600 mx-2"
+            onClick={() => setVisible(false)}
+          >
+            Отмена
+          </button>
+          <button
+            className="text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg bg-orange-600 mx-2 disabled:bg-gray-500"
+            onClick={() => {
+              sendInvitation();
+              navigate(isAdult ? "/Invite?forParent=false" : "/Invite?forParent=true");
+              logout();
+            }}
+            disabled={!(input.isEmailValid || input.isTelValid)}
+          >
+            Отправить приглашение
+          </button>
+        </div>
+      </form>
     </Modal>
   );
 };

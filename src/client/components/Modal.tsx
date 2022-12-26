@@ -18,7 +18,7 @@ export const Modal: React.FC<PropsWithChildren<IModalProps>> = ({ isVisible, set
         onClick={e => {
           e.stopPropagation();
         }}
-        className="bg-white max-w-160 rounded-lg p-3 m-4 flex flex-col justify-center items-center text-center gap-2"
+        className="bg-white max-w-160 rounded-lg p-7 m-4 flex flex-col justify-center items-center text-center gap-2"
       >
         {children}
       </div>

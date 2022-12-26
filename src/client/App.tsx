@@ -21,7 +21,7 @@ export const App = () => {
         <Route path="/" element={isUserAuth ? <Main /> : <Landing />}></Route>
         <Route path="/Auth" element={isUserAuth ? <Navigate to={"/"} /> : <Auth />}></Route>
         <Route path="/Auth/Restore" element={isUserAuth ? <Navigate to={"/"} /> : <Restore />}></Route>
-        <Route path="/Registration" element={isUserAuth ? <Navigate to={"/"} /> : <Registration />}></Route>
+        <Route path="/Registration" element={<Registration />}></Route>
         <Route path="/Invite" element={<Invite />}></Route>
       </Routes>
     </ContextWrapper>

@@ -2,11 +2,13 @@
 
 ```
 yarn
+yarn copy-files
 yarn dev:server
 ```
 OR
 ```
 npm install
+npm run copy-files
 npm run dev:server
 ```
 
