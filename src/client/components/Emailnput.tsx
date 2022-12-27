@@ -80,13 +80,14 @@ export const Emailnput: React.FC<EmailInputProps> = ({ email, isEmailConfirmed, 
         <input
           name="codeInput"
           onChange={handleChangeCodeInput}
-          value={codeInputValue}
+          value={isEmailConfirmed ? "" : codeInputValue}
+          disabled={isEmailConfirmed}
           className={
             "flex-1 border-solid border-gray-400 border rounded px-1 " +
-            (isEmailConfirmed ? "bg-green-200" : "bg-blue-100")
+            (isEmailConfirmed ? "bg-green-200 placeholder-green-800" : "bg-blue-100")
           }
           type="text"
-          placeholder="Введите код из e-mail"
+          placeholder={isEmailConfirmed ? "E-mail подтвержден" :"Введите код из e-mail"}
           maxLength={4}
           hidden={!isCodeSended}
         />

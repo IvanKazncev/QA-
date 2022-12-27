@@ -80,13 +80,14 @@ export const TelNumberInput: React.FC<TelNumberInputProps> = ({ telNumber, isTel
         <input
           name="codeInput"
           onChange={handleChangeCodeInput}
-          value={codeInputValue}
+          value={isTelConfirmed ? "" : codeInputValue}
+          disabled={isTelConfirmed}
           className={
             "flex-1 border-solid border-gray-400 border rounded px-1 " +
-            (isTelConfirmed ? "bg-green-200" : "bg-blue-100")
+            (isTelConfirmed ? "bg-green-200 placeholder-green-800" : "bg-blue-100")
           }
           type="text"
-          placeholder="Введите код из SMS"
+          placeholder={isTelConfirmed ? "Номер телефона подтверждён" : "Введите код из SMS"}
           maxLength={4}
           hidden={!isCodeSended}
         />

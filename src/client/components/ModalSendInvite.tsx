@@ -55,6 +55,7 @@ export const ModalSendInvite: React.FC<PropsWithChildren<IModalPropsInvite>> = (
           <button
             className="text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg bg-orange-600 mx-2"
             onClick={() => setVisible(false)}
+            type="button"
           >
             Отмена
           </button>
@@ -65,6 +66,7 @@ export const ModalSendInvite: React.FC<PropsWithChildren<IModalPropsInvite>> = (
               navigate(isAdult ? "/Invite?forParent=false" : "/Invite?forParent=true");
               logout();
             }}
+            type="button"
             disabled={!(input.isEmailValid || input.isTelValid)}
           >
             Отправить приглашение
